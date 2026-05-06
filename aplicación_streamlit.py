@@ -537,8 +537,8 @@ try:
                 st.markdown('</div>', unsafe_allow_html=True)
 
 except Exception as e:
-    st.error("⚠️ Conectando con el inventario... Por favor espera un momento.")
-    st.info("💡 Verifica que la conexión a Google Sheets esté configurada correctamente en los secrets.")
+    st.error("⚠️ Conectando")
+    st.info("💡 Verifica su conección a internet.")
 
 # FOOTER MODERNO
 st.markdown("""
