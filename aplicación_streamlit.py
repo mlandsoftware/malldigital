@@ -1,4 +1,3 @@
-
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import pandas as pd
@@ -13,7 +12,7 @@ st.set_page_config(page_title="Mall Digital | Tienda Online", layout="wide")
 
 WHATSAPP_NUMBER = "593978868363"
 
-# --- CSS REDISEÑADO: MALL DIGITAL ---
+# --- CSS REDISEÑADO: MALL DIGITAL (sin cambios, solo se mantiene) ---
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
@@ -166,19 +165,13 @@ div[data-testid="stTextInput"] input::placeholder {
     color: #8892b0 !important;
 }
 
-/* SELECTOR DE CANTIDAD Y TALLAS */
+/* SELECTOR DE CANTIDAD (solo número, sin tallas) */
 div[data-testid="stNumberInput"] input {
     border: 2px solid #0f3460 !important;
     border-radius: 12px !important;
     text-align: center !important;
     font-family: 'Poppins', sans-serif !important;
     font-weight: 600;
-}
-
-div[data-testid="stSelectbox"] > div > div {
-    border: 2px solid #0f3460 !important;
-    border-radius: 12px !important;
-    font-family: 'Poppins', sans-serif !important;
 }
 
 /* TABS EN MODAL */
@@ -354,7 +347,7 @@ def get_image_from_drive(url):
     except: 
         return None
 
-# --- VENTANA EMERGENTE (MODAL) ---
+# --- VENTANA EMERGENTE (MODAL) MODIFICADA: SIN TALLAS, CON DESCRIPCIÓN ---
 @st.dialog("🛍️ Detalle del Producto")
 def comprar_producto(row):
     st.markdown(f"""
@@ -365,6 +358,14 @@ def comprar_producto(row):
             {row['Coleccion']}
         </p>
     """, unsafe_allow_html=True)
+    
+    # Obtener descripción del producto: buscar columna 'Descripcion', 'Message' o texto por defecto
+    if 'Descripcion' in row.index and pd.notna(row['Descripcion']):
+        descripcion = row['Descripcion']
+    elif 'Message' in row.index and pd.notna(row['Message']):
+        descripcion = row['Message']
+    else:
+        descripcion = "Sin descripción disponible para este producto."
     
     imagenes = []
     nombres_cols = ["Imagen 1 link de la primera imagen", "Imagen 2 link de la segunda imagen", "Imagen 3 link de la tercera imagen"]
@@ -411,10 +412,20 @@ def comprar_producto(row):
         
         st.markdown("<hr style='margin: 15px 0; border-color: #eee;'>", unsafe_allow_html=True)
         
-        # Selección de tallas (adaptable a cualquier producto)
-        tallas = str(row["Tallas"]).split(',')
-        talla_sel = st.selectbox("📏 Selecciona opción:", tallas)
+        # --- Mostrar descripción del producto (reemplaza al selector de tallas) ---
+        st.markdown("""
+            <div style='margin: 10px 0;'>
+                <span style='font-weight:600; color:#0f3460;'>📄 Descripción:</span>
+            </div>
+        """, unsafe_allow_html=True)
+        st.markdown(f"""
+            <div style='background: #f8f9fa; padding: 12px; border-radius: 12px; 
+                 font-size:0.95rem; color:#1a1a2e; margin-bottom:15px; border-left: 4px solid #e94560;'>
+                {descripcion}
+            </div>
+        """, unsafe_allow_html=True)
         
+        # Cantidad únicamente (ya no hay selector de tallas)
         cantidad = st.number_input("📦 Cantidad:", min_value=1, max_value=10, value=1, step=1)
         
         total = precio * cantidad
@@ -427,11 +438,11 @@ def comprar_producto(row):
             </div>
         """, unsafe_allow_html=True)
         
+        # Mensaje de WhatsApp sin la opción (talla)
         mensaje = f"""Hola Mall Digital, deseo realizar un pedido:
 
 *Producto:* {row['Nombre']}
 *Categoría:* {row['Coleccion']}
-*Opción:* {talla_sel}
 *Cantidad:* {cantidad}
 *Total:* ${total:.2f}
 
@@ -565,4 +576,3 @@ st.markdown("""
     </p>
 </div>
 """, unsafe_allow_html=True)
-
