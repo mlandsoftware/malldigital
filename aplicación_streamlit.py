@@ -461,7 +461,7 @@ st.markdown("""
         </p>
         <div style="display: flex; justify-content: center; gap: 30px; margin-top: 20px; flex-wrap: wrap;">
             <span style="color: #e94560; font-weight: 600;">✓ Envíos a todo el país</span>
-            <span style="color: #e94560; font-weight: 600;">✓ Pagos seguros</span>
+            <span style="color: #e94560; font-weight: 600;">✓ Pagos seguros</span> 
             <span style="color: #e94560; font-weight: 600;">✓ Atención personalizada</span>
         </div>
     </div>
